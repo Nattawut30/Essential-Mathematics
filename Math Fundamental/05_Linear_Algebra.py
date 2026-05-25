@@ -70,3 +70,143 @@ print(scaled_v) # [6, 2]
 # * A lot of problems is more difficult or unsolvable when they are linearly dependent *
 
 """ 4. Linear Transformations """
+# Control directions
+# Use a vector to transform another vector in a function-like manner.
+# i^ and i^ (i-hat and j-hat)
+
+# v^ = i^ + j^
+# 3i^ = 3[1, 0] = [3, 0]
+# 2j^ = 2[0, 1] = [0, 2]
+# v^ = [3, 2]
+
+""" 5. Matrix """
+# i^ is the first column [a, c] and j^ is the column [b, d]
+# [xnew, ynew] = [ax + by, cx + dy]
+
+# 5.7: Matrix vector multiplication in NumPy
+
+from numpy import array
+
+# Compose basis matrix with i-hat and j-hat
+
+basis = array([[3, 0], [0, 2]])
+
+# Declare vector v
+v = array([1, 1])
+
+# Make a new vector
+# tranforming v with the dot product
+new_v = basis.dot(v)
+
+print(new_v) # [3, 2]
+
+# transpose = swap the columns and rows
+# Numpy's array() function will do the opposite orientation we want
+ 
+# 5.8: Separating the basis vectors and applying them as a tranformation
+
+from numpy import array
+
+# Declare i-hat and j-hat
+
+i_hat = array([2, 0])
+j_hat = array([0, 3])
+
+# Compose basis matrix using i-hat and j-hat
+# transpose rows into columns
+basis = array([i_hat, j_hat]).transpose()
+
+v = array([1, 1])
+
+new_v = basis.dot(v)
+
+print(new_v) # [2, 3]
+
+# if v^ = [2, 1] and i^ and j^ is [1, 0] and [0, 1]
+# tranform fast to i^ = [2, 0] and j^ = [0, 3], v^ = [4, 3]
+
+# 5.9: Transforming a vector fast
+
+from numpy import array
+
+i_hat = ([2, 0])
+j_hat = ([0, 3])
+
+basis = array([i_hat, j_hat]).transpose()
+
+v = array([2, 1])
+
+new_v = basis.dot(v)
+
+print(new_v)
+
+# 5.10: A complicated transformation
+
+from numpy import array
+
+i_hat = ([2, 3])
+j_hat = ([2, -1]) # you can see it -1
+
+basis = array([i_hat, j_hat]).transpose()
+
+v = array([2, 1])
+
+new_v = basis.dot(v)
+
+print(new_v) # [6, 5]
+# sheared, rotated, and flipped space.
+
+# 3-dimensional matrix = i^, j^, and k^
+
+""" 6. Matrix Multiplication """
+# Applying multiple transformation to a vector space
+
+# Over-and-Down! method
+# [a, b] [e f] = [ae + bg + af + bh]
+# [c, d] [g h] = [ce + dg + cf + dh]
+
+# Numpy = use matmul() or @ operator
+
+# 5.11: Combining two transformations
+from numpy import array
+
+# Transformation 1
+i_hat1 = array([0, 1])
+j_hat2 = array([-1, 0])
+transform1 = array([i_hat1, j_hat2]).transpose()
+
+# Transformation 2
+i_hat2 = array([1, 0])
+j_hat2 = array([1, 1])
+transform2 = array([i_hat2, j_hat2]).transpose()
+
+# Combine Transformation 1 & 2
+combined = transform2 @ transform1
+
+# Test
+print("Combined Matrix: \n {}".format(combined))
+
+v = array([1, 2])
+print(combined.dot(v)) # [-1, 1]
+# The order you apply each transformation matters!
+# T2 on T1 only
+
+# 5.12: Reverse applying the transformation
+from numpy import array
+
+# T1
+i_hat1 = array([0, 1])
+j_hat1 = array([-1, 0])
+
+# T2
+i_hat2 = array([1, 0])
+j_hat2 = array([1, 1])
+
+# Combine transformation, but in reverse this time
+combined = transform1 @ transform2 # reverse
+
+print("Combined Matrix: \n {}".format(combined))
+
+v = array([1, 2])
+print(combined.dot(v)) # [-2, 3]
+# Wrong orders, different answer!
