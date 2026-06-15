@@ -214,3 +214,105 @@ for i in range(iterations):
 
 print(x, f(x)) # 2.999999999, 4.0
 # After enough iterations, x will end up at the lowest point of the function or close enough to it where the slope is 0
+
+""" 5. Gradient Descent and Linear Regression """
+# Parameters m and b, we can find the best fit line that will then accept an x variable to predict a new y-value
+# The smaller you make the learning rate, the slower it will be and the more iterations you will need
+
+# 7.8: Performing gradient descent for a linear regression
+import pandas as pd
+
+# import points from CSV
+points = list(pd.read_csv("https://bit.ly/2KF29Bd").itertuples())
+
+# Building the model
+m = 0.0
+b = 0.0
+
+# The learing Rate
+L = .001
+
+# The number of iterations
+iterations = 100_000
+
+n = float(len(points)) # number of elements in X
+
+# Perform Gradient Descent
+for i in range(iterations):
+
+    # Slope with respect to m
+    D_m = sum(2 * p.x * ((m * p.x + b) - p.y) for p in points)
+
+    # Slope woth respecr to b
+    D_b = sum(2 * ((m * p.x + b) - p.y) for p in points)
+
+    # Update m and b
+    m -= L * D_b
+    b -= L * D_b
+
+    print("y = {0}x + {1}".format(m, b))
+    # y = 1.9393... + 4.33327
+# Sum of squares, that does not mean our linear regression is any good
+
+# 7.9: Calc. partial derivatives for m and b
+from sympy import *
+
+m, b, i, n = symbols('m b i n')
+x, y = symbols('x y', cls=Function)
+
+sum_of_squares = Sum((m * x(i) + b - y(i)) ** 2, (i, 0, n))
+
+d_m = diff(sum_of_squares, m)
+d_b = diff(sum_of_squares, b)
+
+print(d_m) # Sum(2*(b + m*x(i) - y(i))*x(i), (i, 0, n))
+print(d_b) # Sum(2*b + 2*m*x(i) - 2*y(i), (i, 0, n))
+
+# 7.10: Solving Linear Regression using SymPy
+import pandas as pd
+from sympy import *
+
+# Import points from CSV
+points = list(pd.read_csv("https://bit.ly/2KF29Bd").itertuples())
+
+m, b, i, n = symbols('m b i n')
+x, y = symbols('x y', cls=Function)
+
+sum_of_squares = Sum((m * x(i) + b - y(i)) ** 2, (i, 0, n))
+
+d_m = diff(sum_of_squares, m) \
+    .subs(n, len(points) - 1).doit() \
+    .replace(x, lambda i: points[i].x) \
+    .replace(y, lambda i: points[i].y) \
+    
+d_b = diff(sum_of_squares, b) \
+    .subs(n, len(points) - 1).doit() \
+    .replace(x, lambda i: points[i].x) \
+    .replace(y, lambda i: points[i].y)
+
+# Compile using lambdify for faster computation
+d_m = lambdify([m, b], d_m)
+d_b = lambdify([m, b], d_b)
+
+# Building the model
+m = 0.0
+b = 0.0
+
+# The learnign rate
+L = .001
+
+# The number of iterations
+iterations = 100_000
+
+# Perform Gradient Descent
+for i in range(iterations):
+
+    # update m and b
+    m -= d_m(m, b) * L
+    b -= d_b(m, b) * L
+
+print("y = {0}x + {1}".format(m, b))
+# y = 1.939354x + 4.7333231...
+
+# lambdify() both of our partial derivative functions
+# Convert them and an optimized Python function.
