@@ -199,3 +199,51 @@ print("P-VALUE: {}".format(p_value))
 
 """ 5. Coefficient of Determination"""
 
+# r^2 = Show how much two variables interact with each other.
+
+# 8.7: Creatinga correlation matrix in Pandas
+import pandas as pd
+
+df = pd.read_csv('https://bit.ly/2KF29Bd', delimiter=",")
+
+coeff_determination = df.corr(method='pearson') ** 2
+print(coeff_determination)
+# A coefficient of determination of 0.916971 is 91.69% of the variation in x is explained by y
+# the remaining 8.3029% is noise caused by other uncaptured variables
+
+# Correlation does not equal causation, so there could be other variables contributing to the relationship we are looking
+# Just because x correlation with y =/= x cauese y. Could be y cause x
+# or do not cause each other at all
+# Computers have no concept of causality
+
+""" 6. Standard Error of the Estimate """
+
+# SSE, or sum of squared error = measure the overall error of a linear regression
+# SSE = Σ(y-y^)^2 
+
+# Se = Σ(y-y^)^2 / n - 2 (the standard error of the estimate)
+
+# y^ or y-hat is each predicted value from the line
+# y is represents each actual y-value from the data
+# n is the number of the data points
+
+# 8.8: Calc. the standard error of the estimate
+import pandas as pd
+from math import sqrt
+
+points = list(pd.read_csv('https://bit.ly/2KF29Bd', delimiter=",").itertuples())
+
+n = len(points)
+
+# Regression line
+m = 1.939
+b = 4.733
+
+# Calculate Standard Error of Estimate
+S_e = sqrt((sum((p.y - (m * p.x + b)) ** 2 for p in points)) / (n-2))
+
+print(S_e)
+# 1.87406793500129
+
+# A linear regression has 2 variables, not just one,
+# we have to increase the uncertainty by one more in our degrees of freedom
