@@ -50,3 +50,99 @@ print(predicted_y - margin_of_error, predicted_y + margin_of_error)
 
 """ 2. Train/Test Splits """
 
+# They are dealing with so much data they do not have the time or technical ability to do so
+# When operating with massive amounts of data and variables you cannot sift through all of that
+# Scikit-learn does not support confidence intervals and P-values, as these two techniques are open problems for higher-dimensional
+
+# Train/test split, which typically 1/3 of the data is set aside for testing
+# the other 2/3 is used for traning.
+
+# The training dataset is used to fit the linear regression
+# The testing dataset is used to measure the linear regression's performance on data
+
+# Remember: fitting a regression is synnonymous with "training" The latter word is used by machine learning practitioners.
+
+# 9.2: Doing a train/test split on linear regression
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+# Load the data
+df = pd.read_csv('https://bit.ly/3cIH97A', delimiter=",")
+
+# Extract input variables (all rows, all columns but last column)
+X = df.values[:, :-1]
+
+# Extract output column (all rows, last column)
+Y = df.values[:, -1]
+
+# Separate training and testing data
+# This leaves a third of the data out for testing
+X_train, X_test, Y_train, Y_test = train_test_split(X,Y, test_size=1/3)
+
+model = LinearRegression()
+model.fit(X_train, Y_train)
+result = model.score(X_test, Y_test)
+print("r^2: %.3f" % result)
+
+# train_test_split() will take dataset (X and Y column), shuffle it, and return our training and testing datasets
+# based on our testing-dataset size.
+# LinearRegression'sfit() use it to fit on the training datasets X_train and Y_train
+# score() function on the testing datasets X_test and Y_test to evaluate the r^2
+# The higher the r^2 is for our testing dataset, the better
+
+# Alternative way to testing dataset across each 1/3 fold = cross-validation
+# This is the gold standard of validation techniqures.
+
+# 9.3: Using three-fold cross-validation for a linear regression
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import KFold, cross_val_score
+
+df = pd.read_csv('https://bit.ly/3cIH97A', delimiter=",")
+
+# Extract input variables (all rows, all columns but last column)
+X = df.values[:, :-1]
+
+# Extract output column (all rows, last column)
+Y = df.values[:, -1]
+
+# Perform a simple linear regression
+kfold = KFold(n_splits=3, random_state=7, shuffle=True)
+model = LinearRegression()
+results = cross_val_score(model, X, Y, cv=kfold)
+print(results)
+print("MSE: mean=%.3f (stdev-%.3f)" % (results.mean(), results.std()))
+# In this case the MSE is averaged alongside its standard deviation to show how consistently each test performed.
+
+# random-fold validation = repeatly shuffle and train/test splt your data an unlimited number of times
+
+# 9.4: Using a random-fold validation for a linear regression
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import cross_val_score, ShuffleSplit
+
+df = pd.read_csv('https://bit.ly/38XwbeB', delimiter=",")
+
+# Extract input variables (all rows, all columns but last column)
+X = df.values[:, :-1]
+
+# Extract output column (all rows, last column)
+Y = df.values[:, -1]
+
+# Perform a simple linear regression
+kfold = ShuffleSplit(n_splits=10, test_size=.33, random_state=7)
+model = LinearRegression()
+results = cross_val_score(model, X, Y, cv=kfold)
+
+print(result)
+print("mean=%.3f (stdev-%.3f)" % (results.mean(), results.std()))
+
+# A train/test split is going to provide a way to measure how well you linear regression will perform on data it has not seen before.
+
+# Train/Test splits are not guarantees!
+# holding out another dataset or "validation set" is sometimes necessary
+# You can use the validation dataset as one last stopgap to see if p-hacking caused you to overfit to your testing dataset.
+# sometimes we got it all including training, testing, and validation but it still biased to begin anyway
+
+""" 3. Multiple Linear Regression """
