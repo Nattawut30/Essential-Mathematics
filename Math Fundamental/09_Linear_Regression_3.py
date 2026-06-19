@@ -174,4 +174,3 @@ print("z = {0} + {1}x + {2}y".format(fit.intercept_, fit.coef_[0], fit.coef_ [1]
 
 # Analyze the relationships between each pair of variables using a correlation matrix,
 # It will help your efforts to create a productive machine learning model
-
