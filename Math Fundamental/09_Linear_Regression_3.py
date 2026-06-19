@@ -146,3 +146,32 @@ print("mean=%.3f (stdev-%.3f)" % (results.mean(), results.std()))
 # sometimes we got it all including training, testing, and validation but it still biased to begin anyway
 
 """ 3. Multiple Linear Regression """
+
+# r^2 is fine but the standard error and gets harder with more than 2 vriables
+
+# 9.4: A linear regression with two input variables
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+df = pd.read_csv('https://bit.ly/2X1HWH7', delimiter=",")
+
+# Extract input variables (all rows, all columns but last column)
+X = df.values[:, :-1]
+
+# Extract output column (all rows, last column)
+Y = df.values[:, -1]
+
+# Training
+fit = LinearRegression().fit(X,Y)
+
+# print coefficients
+print("Coefficients = {0}".format(fit.coef_))
+print("Intercept = {0}".format(fit.intercept_))
+print("z = {0} + {1}x + {2}y".format(fit.intercept_, fit.coef_[0], fit.coef_ [1]))
+
+# When a model becomes so inundated with variables it starts to lose explainbility
+# The machine learning start to come in and treat the model as a black box
+
+# Analyze the relationships between each pair of variables using a correlation matrix,
+# It will help your efforts to create a productive machine learning model
+
